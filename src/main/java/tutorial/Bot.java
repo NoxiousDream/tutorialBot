@@ -1,9 +1,11 @@
 package tutorial;
 
-import tutorial.internal.MyConstants;
 
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import tutorial.internal.MyConstants;
 
 public class Bot extends TelegramLongPollingBot {
 
@@ -23,6 +25,18 @@ public class Bot extends TelegramLongPollingBot {
         var sender = message.getFrom();
 
         System.out.println(sender.getFirstName() + " wrote \"" + message.getText() + "\"!");
+        sendText(sender.getId(), message.getText());
+    }
+
+    public void sendText(Long who, String what){
+        SendMessage sm = SendMessage.builder()
+                .chatId(who.toString())
+                .text(what).build();
+        try {
+            execute(sm);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
